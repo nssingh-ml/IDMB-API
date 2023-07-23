@@ -69,27 +69,7 @@ body {
   }
   
 
-  /* paging  */
-  /* #pagination {
-    text-align: center;
-    margin-top: 1rem;
-  }
-  
-  #pagination button {
-    padding: 0.5rem 1rem;
-    margin: 0 0.25rem;
-    cursor: pointer;
-  }
-  
-  footer {
-    text-align: center;
-    background-color: #333;
-    color: #fff;
-    padding: 0.5rem;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-  } */
+   
 
   #pagination {
     margin-top: 1rem;
@@ -113,8 +93,8 @@ body {
   } */
   
   #pagination button.active {
-    background-color: #007bff;
-    color: #fff;
+    background-color: #f0f0f0;
+    color: #161515;
   }
   
   #pagination .ellipsis {
@@ -289,3 +269,68 @@ body {
     display: flex;
     align-items: center;
   }
+  .rating-container p {
+    margin-right: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    font-style: italic;
+  }
+  
+  .rating-container label {
+    position: relative;
+    font-size: 30px;
+    color: #ccc;
+    cursor: pointer;
+  }
+  
+  .rating-container label input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .rating-container label span:before {
+    content: '\2605'; /* Unicode star symbol (★) */
+  }
+  
+  .rating-container label input:checked ~ span:before {
+    color: #f39c12; /* Color for the checked stars */
+  }
+  
+  .rating-buttons{
+    display: flex;
+    justify-content: center;
+  }
+  
+
+  /* Media query for responsiveness */
+@media (max-width: 768px) {
+  .movie-list-container {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-gap: 10px;
+  }
+
+  .movie-details-page {
+    width: 90%;
+    max-width: 500px;
+    margin: 10px auto;
+    padding: 10px;
+  }
+
+  #ratingInput {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #ratingInput p {
+    margin-right: 0;
+    margin-bottom: 5px;
+  }
+
+  #saveButton,
+  #hideButton {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+}

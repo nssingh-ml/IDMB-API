@@ -1,4 +1,4 @@
-// Replace 'YOUR_API_KEY' with your actual OMDB API key
+ 
 const apiKey = '95b08d68';
 const apiUrl = 'https://www.omdbapi.com/';
 
@@ -23,6 +23,7 @@ async function fetchMovieList(searchQuery = '', page = 1) {
       throw new Error(data.Error);
     }
   } catch (error) {
+    // searchStatus.innerHTML = `${error}... Try a different search`; 
     console.error('Error fetching movie list:', error.message);
     return [];
   }
@@ -32,7 +33,7 @@ async function fetchMovieList(searchQuery = '', page = 1) {
 function displayMovies(movies) {
   movieListContainer.innerHTML = '';
 
-  movies.forEach(movie => {
+  movies.forEach((movie) => {
     const movieCard = document.createElement('div');
     movieCard.classList.add('movie-card');
     movieCard.addEventListener("click", () => openModal(movie));
@@ -71,11 +72,7 @@ function handlePagination(totalResults) {
     prevButton.addEventListener('click', () => {
         searchMovies(searchInput.value.trim(), currentPage - 1);
     });
-    // prevButton.addEventListener('click', () => {
-    //   currentPage--;
-    //   fetchAndDisplayMovies();
-    // });
-  
+    
     paginationContainer.appendChild(prevButton);
     
 
@@ -116,20 +113,6 @@ function handlePagination(totalResults) {
     // Show the last page
     addPageButton(totalPages, currentPage);
   }
-
-
-
-    // for (let i = 1; i <= totalPages; i++) {
-    //   const pageButton = document.createElement('button');
-    //   pageButton.textContent = i;
-    //   pageButton.disabled = currentPage === i;
-    //   pageButton.addEventListener('click', () => {
-    //     currentPage = i;
-    //     fetchAndDisplayMovies();
-    //   });
-  
-    //   paginationContainer.appendChild(pageButton);
-    // }
   
     // Create the "Next" button
     const nextButton = document.createElement('button');
@@ -140,11 +123,7 @@ function handlePagination(totalResults) {
     nextButton.addEventListener('click', () => {
         searchMovies(searchInput.value.trim(), currentPage + 1);
     });
-    // nextButton.addEventListener('click', () => {
-    //   currentPage++;
-    //   fetchAndDisplayMovies();
-    // });
-  
+     
     paginationContainer.appendChild(nextButton);
 
     // Update active state for page buttons
@@ -219,12 +198,13 @@ function handleSearchButtonClick() {
 
 // Function to fetch and display movies with pagination
 async function fetchAndDisplayMovies() {
-  const searchQuery = searchInput.value.trim();
-//   if(searchQuery===''){
-    
-//   }
+  const searchQuery = searchInput.value.trim()===''? 'harry':searchInput.value.trim();
+  // const searchQuery = searchInput.value.trim()
+  
+   
   const movies = await fetchMovieList(searchQuery, currentPage);
-
+   
+  searchMovies(movies);
   displayMovies(movies);
 
   if (movies.length > 0) {
@@ -239,48 +219,9 @@ async function fetchAndDisplayMovies() {
 const movieDetailsContainer = document.getElementById('movieDetails');
 
 
-// function displayMovieDetails(movie) {
-//     console.log(movie.Title);
-//   movieDetailsContainer.innerHTML = `
-//     <h2>${movie.Title}</h2>
-//     <img src="${movie.Poster}" alt="${movie.Title} Poster">
-//     <p><strong>Year:</strong> ${movie.Year}</p>
-//     <p><strong>Rated:</strong> ${movie.Rated}</p>
-//     <p><strong>Genre:</strong> ${movie.Genre}</p>
-//     <p><strong>Plot:</strong> ${movie.Plot}</p>
-//     <p><strong>Director:</strong> ${movie.Director}</p>
-//     <p><strong>Actors:</strong> ${movie.Actors}</p>
-//     <!-- Add more movie information here as needed -->
-//   `;
-// }
+ 
 
-// Function to display movie details
-// function displayMovieDetails(movie) {
-//     if (!movie) {
-//       // If the movie details are not available, clear the movie details section
-//       movieDetailsContainer.innerHTML = '';
-//       return;
-//     }
-//     const m_array=Object.entries(movie);
-
-//     let mov_details='';
-//     for(const [key,value] of m_array){
-//         if(key==='Poster'){
-//             continue;
-//         }
-//         mov_details+= `<p><strong>${key}:</strong> ${value}</p>`;
-//     }
-//     movieDetailsContainer.innerHTML = `
-//       <h2>${movie.Title}</h2>
-//       <img src="${movie.Poster}" alt="${movie.Title} Poster">
-//       ${mov_details}
-//     `;
-  
-//     // Show the movie details section by adding the "active" class
-//     movieDetailsContainer.classList.add('active');
-//   }
-
-  // **************** modals activation for the movie details
+  // modals activation for the movie details
 const modal = document.getElementById('filter-modal');
 const closeBtn = modal.querySelector('.close');
 closeBtn.addEventListener('click', closeModal);
@@ -298,7 +239,7 @@ window.addEventListener('click', (event) => {
     closeModal();
   }
 });
-// **************** Fetch only details
+// Fetch only details
 async function fetchMovieDetails(movieID) {
   searchStatus.innerHTML = ``;
   try {
@@ -315,7 +256,7 @@ async function fetchMovieDetails(movieID) {
   }
 }
 
-// **************** Show the Details of the movies and render the DOM
+//Show the Details of the movies and render the DOM
 async function showMovieDetails(movie) {
   const feedback = userFeedbackArray.find(feedback => feedback.feedback_id === movie.imdbID); // if already rated
   let rating = comment = "";
@@ -332,10 +273,10 @@ async function showMovieDetails(movie) {
 
   movieDetailsHtmlElement.appendChild(posterImg);
 
-  const movieDetails = await fetchMovieDetails(movie.imdbID); // get the details of the movie
+  const movieDetails = await fetchMovieDetails(movie.imdbID);  
 
   console.log(movieDetailsHtmlElement)
-  // **************** dynamically add the <h6> tags for the details
+  //dynamically add the <h6> tags for the details
   Object.keys(movieDetails).forEach(key => {
     const hTag = document.createElement("h6");
     hTag.style.color = "black";
@@ -366,169 +307,6 @@ async function showMovieDetails(movie) {
   movieDetailsHtmlElement.appendChild(feedbackForm);
 }
 
-
-
-
-// Function to open the movie details page in a new window
-function openMovieDetailsPage(movie) {
-    const movieDetailsPage = window.open('', '_blank', 'width=800,height=600');
-    const m_array=Object.entries(movie);
-
-    let mov_details='';
-    for(const [key,value] of m_array){
-        if(key==='Poster'){
-            continue;
-        }
-        mov_details+= `<p><strong>${key}:</strong> ${value}</p>`;
-    }
-    // Movie details page content
-    const movieDetailsContent = `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>${movie.Title} - Movie Details</title>
-      <link rel="stylesheet" href="styles.css">
-      <style>
-      .movie-details-page {
-        width: 80%;
-        max-width: 300px;
-        margin: 30px auto;
-        padding: 20px;
-        border: 1px solid #ddd;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        background-color: #5a5454;
-        text-align: center;
-      }
-      
-      .movie-details-page h2 {
-        margin-top: 0;
-      }
-      
-      .movie-details-page img {
-        max-width: 100%;
-        height: auto;
-      }
-      
-      .close-button {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        padding: 5px 10px;
-        background-color: #ccc;
-        border: none;
-        cursor: pointer;
-      }  
-      /* CSS for the feedback form */
-        #feedbackForm {
-        margin-top: 20px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        background-color: #f9f9f9;
-        }
-
-        #ratingInput {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-        }
-
-        #ratingInput p {
-        margin: 0;
-        margin-right: 10px;
-        }
-
-        textarea {
-        width: 100%;
-        height: 100px;
-        resize: vertical;
-        margin-bottom: 10px;
-        }
-
-        #saveButton,
-        #hideButton {
-        background-color: #007bff;
-        color: #fff;
-        padding: 8px 15px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-right: 10px;
-        }
-
-        #hideButton {
-        background-color: #dc3545;
-        }
-
-        #saveButton:hover,
-        #hideButton:hover {
-        background-color: #0056b3;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="movie-details-page">
-        <button class="close-button" onclick="window.close()">X</button>
-        <h2>${movie.Title}</h2>
-        <img src="${movie.Poster}" alt="${movie.Title} Poster">
-        ${mov_details}
-        <p><strong>Year:</strong> ${movie.Year}</p>
-        <p><strong>Rated:</strong> ${movie.Rated}</p>
-        <p><strong>Genre:</strong> ${movie.Genre}</p>
-        <p><strong>Plot:</strong> ${movie.Plot}</p>
-        <p><strong>Director:</strong> ${movie.Director}</p>
-        <p><strong>Actors:</strong> ${movie.Actors}</p>
-        <!-- Add more movie information here as needed -->
-      </div>
-
-      <!-- Feedback Form -->
-    <div id="feedbackForm">
-      <div id="ratingInput" style="display:flex; align-items:center;">
-        <p>Rating (1-5 stars):</p>
-        <label><input type="radio" name="rating" value="1" ${(movie.rating === "1") ? "checked" : ""}>1</label>
-        <label><input type="radio" name="rating" value="2" ${(movie.rating === "2") ? "checked" : ""}>2</label>
-        <label><input type="radio" name="rating" value="3" ${(movie.rating === "3") ? "checked" : ""}>3</label>
-        <label><input type="radio" name="rating" value="4" ${(movie.rating === "4") ? "checked" : ""}>4</label>
-        <label><input type="radio" name="rating" value="5" ${(movie.rating === "5") ? "checked" : ""}>5</label>
-      </div>
-      <textarea id="commentInput" placeholder="Leave a comment">${comment}</textarea>
-      <button id="saveButton" onclick="saveRatingAndComment('${movie.imdbID}')">Save Rating & Comment</button>
-      <button id="hideButton" onclick="hideMovieDetails()">Hide Details</button>
-    </div>
-
-     
-
-    </body>
-    </html>
-    `;
-  
-    // Set the content of the new window
-    movieDetailsPage.document.body.innerHTML = movieDetailsContent;
-    // Function to save user's rating and comment
-    
- 
-
-  }
-
-  // Function to hide movie details
-function hideMovieDetails() {
-    // Hide the movie details section by removing the "active" class
-    movieDetailsContainer.classList.remove('active');
-  }
-
-// async function openModal(movie){
-//     const movieId=movie.imdbID;
-//     // console.log("display",movie.imdbID);
-//   if (movieId) {
-//     const movie_d = await fetchMovieDetails(movieId);
-//     displayMovieDetails(movie_d);
-//     if (movie_d) {
-//         openMovieDetailsPage(movie_d);
-//         // showMovieDetails(movieId);
-//       }
-//   }
-// }
 
 // Function to fetch additional movie details from OMDB API
 async function fetchMovieDetails(movieId) {
