@@ -298,7 +298,22 @@ window.addEventListener('click', (event) => {
     closeModal();
   }
 });
-
+// **************** Fetch only details
+async function fetchMovieDetails(movieID) {
+  searchStatus.innerHTML = ``;
+  try {
+    const response = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}&i=${movieID}&type=movie`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok.');
+    }
+    const data = await response.json();
+    return data;
+  }
+  catch(error) {
+    searchStatus.innerHTML = `${error}... Try a different search`; // display appropriate message
+    return []; // Return an empty array in case of an error
+  }
+}
 
 // **************** Show the Details of the movies and render the DOM
 async function showMovieDetails(movie) {
@@ -317,11 +332,13 @@ async function showMovieDetails(movie) {
 
   movieDetailsHtmlElement.appendChild(posterImg);
 
-  const movieDetails = await fetchMovieList(movie.imdbID); // get the details of the movie
+  const movieDetails = await fetchMovieDetails(movie.imdbID); // get the details of the movie
 
+  console.log(movieDetailsHtmlElement)
   // **************** dynamically add the <h6> tags for the details
   Object.keys(movieDetails).forEach(key => {
     const hTag = document.createElement("h6");
+    hTag.style.color = "black";
     if(key!=="Ratings" && key!=="Poster"){
       hTag.innerHTML = `${key} : ${movieDetails[key]}`;  
       movieDetailsHtmlElement.appendChild(hTag);
